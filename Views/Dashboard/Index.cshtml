@@ -1,0 +1,115 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 50px auto;
+            text-align: center;
+        }
+
+        .card {
+            display: inline-block;
+            width: 250px;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: #ffffff;
+        }
+
+            .card h3 {
+                margin: 0;
+                font-size: 24px;
+                color: #333333;
+            }
+
+            .card p {
+                margin: 10px 0 0;
+                font-size: 36px;
+                font-weight: bold;
+                color: #0851cf;
+            }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+            .header h1 {
+                margin: 0;
+                font-size: 48px;
+                color: #0851cf;
+            }
+    </style>
+</head>
+@*@if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+           <h1> Succesfull</h1>
+        </div>
+    }*@
+
+
+
+<style>
+    #successcard {
+        border: 1px solid #28a745;
+        border-radius: 5px;
+        padding: 20px;
+        margin: 20px 0;
+        background-color: transparent;
+        color: #155724;
+        width: 200px;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>DashBoard</h1>
+        </div>
+        <div class="card">
+            <h3>Aktif Müşteriler</h3>
+            <p>@ViewBag.ClientNumber</p>
+            @using (Html.BeginForm("ShowActiveClientsList", "Client", FormMethod.Post))
+            {
+                <input type="submit" value="Aktif Müşterileri Göster " style="background-color: #0851cf; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 18px" />
+            }
+
+
+        </div>
+        <div class="card">
+            <h3>Açık Aktiviteler</h3>
+            <p>@ViewBag.ActivityNumber</p>
+            @using (Html.BeginForm("ShowOpenActivitiesList", "Activity", FormMethod.Post))
+            {
+                <input type="submit" value="Açık Aktiviteleri Göster " style="background-color: #0851cf; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 18px" />
+            }
+        </div>
+    </div>
+</body>
+
+
+
+</html>
+

@@ -1,0 +1,186 @@
+﻿@model IEnumerable<StajIlkProje.Models.User>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+    @using (Html.BeginForm("SearchInUsers", "User", FormMethod.Post, new { @class = "form-horizontal", role = "form", @style = "height:30px" }))
+    {
+        <div class="input-group">
+            <div class="form-outline" data-mdb-input-init>
+                @Html.TextBox("text", null, new { @id = "form2", @class = "form-control", style = "width: 900px; ", type = "search" })
+            </div>
+            <input type="submit" class="btn btn-primary" value="Ara" style="color: white; font-size: 14px; border-radius: 10px; padding: 3px; background-color: #34a1eb; text-decoration: none; width: 150px; height:50px">
+        </div>
+    }
+
+    <h2>Kullanıcı Listesi</h2>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">Yeni Kullanıcı Ekle</button>
+
+    <!-- Add User Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addUserModalLabel">Add New User</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @using (Html.BeginForm("AddUser", "User", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {
+                        <div class="form-group">
+                            @Html.Label("Name")
+                            @Html.TextBox("Name", "", new { @class = "form-control", @id = "addName" })
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("Surname")
+                            @Html.TextBox("Surname", "", new { @class = "form-control", @id = "addSurname" })
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("PhoneNum")
+                            @Html.TextBox("PhoneNum", "", new { @class = "form-control", @id = "addPhoneNum" })
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("Email")
+                            @Html.TextBox("email", "", new { @class = "form-control", @id = "addEmail" })
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("Password")
+                            @Html.Password("password", "", new { @class = "form-control", @id = "addPassword" })
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Add User" class="btn btn-primary" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Edit User Modal -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editUserModalLabel">Kullanıcı Düzenle</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @using (Html.BeginForm("EditUser", "User", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {
+                        @Html.Hidden("UserId", "")
+                        <div class="form-group">
+                            @Html.Label("Name")
+                            @Html.TextBox("Name", "", new { @class = "form-control", @id = "editName" })
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("Surname")
+                            @Html.TextBox("Surname", "", new { @class = "form-control", @id = "editSurname" })
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("PhoneNum")
+                            @Html.TextBox("PhoneNum", "", new { @class = "form-control", @id = "editPhoneNum" })
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("Email")
+                            @Html.TextBox("email", "", new { @class = "form-control", @id = "editEmail" })
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("Password")
+                            @Html.Password("password", "", new { @class = "form-control", @id = "editPassword" })
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Değişiklikleri Kaydet" class="btn btn-primary" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Kullanıcı No</th>
+                <th>İsim</th>
+                <th>Soyisim</th>
+                <th>Telefon No</th>
+                <th>Email</th>
+                <th>Şifre</th>
+                <th>Durum</th>
+                <th>Düzenle</th>
+                <th> Durum Değiştir </th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+                foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => user.UserId)</td>
+                        <td>@Html.DisplayFor(modelItem => user.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => user.Surname)</td>
+                        <td>@Html.DisplayFor(modelItem => user.PhoneNum)</td>
+                        <td>@Html.DisplayFor(modelItem => user.email)</td>
+                        <td>@Html.DisplayFor(modelItem => user.password)</td>
+                        <td>
+                            @if (user.isActive)
+                            {
+                                <i class="fas fa-circle" style="color: green;"></i>
+                            }
+                            else
+                            {
+                                <i class="fas fa-circle" style="color: red;"></i>
+                            }
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-warning editUserButton" data-toggle="modal" data-target="#editUserModal"
+                                    data-userid="@user.UserId" data-name="@user.Name" data-surname="@user.Surname"
+                                    data-phonenum="@user.PhoneNum" data-email="@user.email" data-password="@user.password">
+                                Düzenle
+                            </button>
+                        </td>
+                        <td>
+                            @using (Html.BeginForm("ChangeUserState", "User", new { UserId = user.UserId }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                            {
+                                <input type="submit" class="btn btn-danger" value=" Durum Değiştir ">
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function () {
+            $('.editUserButton').on('click', function () {
+                var userId = $(this).data('userid');
+                var name = $(this).data('name');
+                var surname = $(this).data('surname');
+                var phoneNum = $(this).data('phonenum');
+                var email = $(this).data('email');
+                var password = $(this).data('password');
+
+                $('#editUserModal #UserId').val(userId);
+                $('#editUserModal #editName').val(name);
+                $('#editUserModal #editSurname').val(surname);
+                $('#editUserModal #editPhoneNum').val(phoneNum);
+                $('#editUserModal #editEmail').val(email);
+                $('#editUserModal #editPassword').val(password);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+﻿
+@{
+    Layout = null;
+}
+<html>
+<head>
+    <style>
+        body {
+            background-image: url('C:/Users/hp/Downloads/Call center concept vector.jfif');
+            background-size: cover; /* Arka planın ekran boyutuna sığması için */
+            background-position: center; /* Arka planın merkezlenmesi */
+            font-family: Arial, sans-serif; /* Varsayılan font ayarı */
+        }
+
+        /* Diğer CSS stillendirmeleri buraya ekleyebilirsiniz */
+    </style>
+</head>
+<body>
+    
+    <head>
+        <div>
+            @RenderBody()
+        </div>
+        <div>
+            @RenderSection("scripts", required: false)
+        </div>
+        </head>
+    </body>
+

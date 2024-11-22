@@ -1,0 +1,170 @@
+﻿@model StajIlkProje.Models.Activity
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #b5cef5;
+        }
+
+        .container {
+            margin: auto;
+            margin-top: 100px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+            .container h2 {
+                text-align: center;
+            }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+            .form-group label {
+                display: block;
+                font-weight: bold;
+            }
+
+            .form-group input {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box;
+            }
+
+                .form-group input[type="submit"] {
+                    background-color: #007bff;
+                    color: white;
+                    border: none;
+                    padding: 10px 20px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    border-radius: 5px;
+                }
+
+                    .form-group input[type="submit"]:hover {
+                        background-color: #0056b3;
+                    }
+
+        .sign-in-button {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+            .sign-in-button button {
+                background-color: transparent;
+                border: none;
+                color: #007bff;
+                cursor: pointer;
+                font-size: 14px;
+            }
+
+                .sign-in-button button:hover {
+                    text-decoration: underline;
+                }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Register</h2>
+
+        @using (Html.BeginForm("UpdateActivity", "Activity", FormMethod.Post, new { @class = "form -horizontal", role = "form" }))
+        {
+            <div class="form-group">
+                @Html.HiddenFor(model => model.ClientId)
+                @Html.HiddenFor(model => model.RecordDate)
+                @Html.HiddenFor(model => model.ActivityId)
+            </div>
+
+            <div class="form-group">
+                <label>Communication Channel:</label>
+                <style>
+                    .custom-dropdown {
+                        width: 200px; /* Genişliği ayarla */
+                        height: 40px; /* Yüksekliği ayarla */
+                        font-size: 16px; /* Yazı boyutunu ayarla */
+                        padding: 5px; /* İç boşluğu ayarla */
+                    }
+                </style>
+                @Html.DropDownList("CommunicationChannel", new SelectList(new List<SelectListItem>
+{
+new SelectListItem { Text = "Twitter", Value = "Twitter" },
+new SelectListItem { Text = "Instagram", Value = "Instagram" },
+new SelectListItem { Text = "Friends", Value = "Friends" }
+}, "Value", "Text"), "Select a Channel", new { @class = "custom-dropdown" })
+            </div>
+            <div class="form-group">
+                <label>Subject:</label>
+                @Html.TextBoxFor(model => model.Subject)
+            </div>
+            <div class="form-group">
+                <label>Notes:</label>
+                @Html.TextAreaFor(model => model.Notes)
+            </div>
+            <div class="form-group">
+                <label>Product Name:</label>
+                @Html.TextBoxFor(model => model.ProductName)
+            </div>
+            <div class="form-group">
+                <label>Store:</label>
+
+                @Html.DropDownList("Store", new SelectList(new List<SelectListItem>
+{
+new SelectListItem { Text = "Apple", Value = "Apple" },
+new SelectListItem { Text = "Samsung", Value = "Samsung" },
+new SelectListItem { Text = "Nissan", Value = "Nissan" }
+}, "Value", "Text"), "Select a Store", new { @class = "custom-dropdown" })
+            </div>
+            <div class="form-group">
+                <label>Activity State:</label>
+                @Html.DropDownList("State", new SelectList(new List<SelectListItem>
+{
+new SelectListItem { Text = "Active", Value = "True" },
+new SelectListItem { Text = "Passive", Value = "False" },
+
+}, "Value", "Text"), "Select State", new { @class = "custom-dropdown" })
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Submit" />
+            </div>
+        }
+
+        <div class="button">
+            @Html.ActionLink("Go Back", "Index", "Dashboard", null)
+        </div>
+    </div>
+
+</body>
+</html>
+@*<!DOCTYPE html>
+
+    @using (Html.BeginForm("UpdateActivity", "Activity", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        <fieldset>
+            @Html.HiddenFor(model => model.ClientId)
+            @Html.HiddenFor(model => model.ActivityId)
+            @Html.HiddenFor(model => model.RecordDate)
+            <b>CommunicationChannel: </b> @Html.TextBoxFor(model => model.CommunicationChannel)
+        <b>Subject: </b> @Html.TextBoxFor(model => model.Subject)
+        <b>Notes: </b> @Html.TextAreaFor(model => model.Notes)
+        <b>ProductName: </b> @Html.TextBoxFor(model => model.ProductName)
+        <b>Store: </b> @Html.TextBoxFor(model => model.Store)
+        <b>State: </b> @Html.TextBoxFor(model => model.State)
+
+            <input type="submit" value="Submit" />
+        </fieldset>
+    }*@

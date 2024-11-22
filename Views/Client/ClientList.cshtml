@@ -1,0 +1,291 @@
+﻿@model IEnumerable<StajIlkProje.Models.Client>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string from_search = "ShowClientList";
+    string from_update = "UpdateClientfromClientList";
+    string from_delete = "";
+    if (TempData["from"] != null && (TempData["from"].ToString() == "ShowActiveClientsList" || TempData["from"].ToString() == "UpdateClientfromOpenClientList"))
+    {
+        from_search = "ShowSearchedClientListForOpen";
+        from_update = "UpdateClientfromOpenClientList";
+        from_delete = "DeleteClientfromOpenClients";
+
+    }
+
+    if (TempData["from"] != null && (TempData["from"].ToString() == "ShowClientList" || TempData["from"].ToString() == "UpdateClientfromClientList"))
+    {
+        from_search = "ShowSearchedClientList";
+        from_update = "UpdateClientfromClientList";
+        from_delete = "DeleteClientfromAllClients";
+
+
+    }
+
+}
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<div class="modal fade" id="editClientModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm(@from_update, "Client", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.Hidden("ClientId", "")
+                    <div class="form-group">
+                        @Html.Label("İsim")
+                        @Html.TextBox("Name", "", new { @class = "form-control", @id = "editName" })
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Soyisim")
+                        @Html.TextBox("Surname", "", new { @class = "form-control", @id = "editSurname" })
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Telefon No(Başında 0 olmadan 10 haneli)")
+                        @Html.TextBox("PhoneNum", "", new { @class = "form-control", @id = "editPhoneNum" })
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Email")
+                        @Html.TextBox("email", "", new { @class = "form-control", @id = "editEmail" })
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Müşteri Durum")
+                        @Html.DropDownList("isActive", new List<SelectListItem>
+                        {
+                        new SelectListItem { Text = "Aktif", Value = "true" },
+                        new SelectListItem { Text = "Pasif", Value = "false" }
+                    }, new { @class = "form-control", @id = "editisActive" })
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Değişiklikleri Kaydet" class="btn btn-primary" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm(from_search, "Client", FormMethod.Post, new { @class = "form-horizontal", role = "form", @style = "heigth:200px" }))
+{
+
+    <div class="input-group">
+        <div class="form-outline" data-mdb-input-init>
+            @Html.TextBox("word", null, new { @id = "form2", @class = "form-control", style = "width: 900px;", type = "search" })
+        </div>
+        <input type="submit" class="btn btn-primary" value="Ara" style="color: white; font-size: 14px; border-radius: 10px; padding: 3px 3px 3px 3px; background-color: #34a1eb; text-decoration: none; width: 150px">
+    </div>
+
+}
+
+<h2>Müşteriler</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Müşteri No</th>
+            <th>İsim</th>
+            <th>Soyisim</th>
+            <th>Telefon Numarası</th>
+            <th>Email</th>
+            <th>Durum</th>
+            <th>Düzenle</th>
+            <th>Sil</th>
+            <th>Aktivite</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            foreach (var client in Model)
+            {
+
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => client.ClientId)</td>
+                    <td>@Html.DisplayFor(modelItem => client.Name)</td>
+                    <td>@Html.DisplayFor(modelItem => client.Surname)</td>
+                    <td>@Html.DisplayFor(modelItem => client.PhoneNum)</td>
+                    <td>@Html.DisplayFor(modelItem => client.email)</td>
+
+                    <td>
+                        @if (client.isActive)
+                        {
+                            <i class="fas fa-circle" style="color: green;"></i>
+                        }
+                        else
+                        {
+                            <i class="fas fa-circle" style="color: red;"></i>
+                        }
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-warning editUserButton" data-toggle="modal" data-target="#editClientModal"
+                                data-userid="@client.ClientId" data-name="@client.Name" data-surname="@client.Surname"
+                                data-phonenum="@client.PhoneNum" data-email="@client.email" data-isactive="@client.isActive">
+                            Düzenle
+                        </button>
+                    </td>
+                    <td>
+                        @using (Html.BeginForm(from_delete, "Client", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                        {
+                            @Html.Hidden("ClientId", client.ClientId)
+                            @Html.Hidden("Name", client.Name)
+                            @Html.Hidden("Surname", client.Surname)
+                            @Html.Hidden("email", client.email)
+                            @*@Html.Hidden("password", client.password)*@
+                            @Html.Hidden("isActive", client.isActive)
+                            @Html.Hidden("PhoneNum", client.PhoneNum)
+                            <input type="submit" value="Müşteriyi Sil" style="color: white; font-size: 14px; border-radius: 10px; padding: 3px 3px 3px 3px; background-color: #eb1328; text-decoration: none;" />
+                        }
+                    </td>
+                    <td>
+
+                        @using (Html.BeginForm("ShowActivityListForClient", "Activity", new
+                        {
+                            ClientId = client.ClientId
+                        }, FormMethod.Post, new { @class = "form -horizontal", role = "form" }))
+                        {
+
+                            @Html.Hidden("Name", client.Name)
+                            @Html.Hidden("Surname", client.Surname)
+                            @Html.Hidden("email", client.email)
+                            @*@Html.Hidden("password", client.password)*@
+                            @Html.Hidden("isActive", client.isActive)
+                            @Html.Hidden("PhoneNum", client.PhoneNum)
+                            <input type="submit" value="Aktivite" style="color: white; font-size: 14px; border-radius: 10px; padding: 3px 3px 3px 3px; background-color: #2dba52; text-decoration: none;" />
+                        }
+
+                    </td>
+                </tr>
+
+            }
+
+        <td>
+
+            <button type="button" class="btn btn-primary addClientButton" data-toggle="modal"
+                    data-target="#addClientModal">
+                Yeni Müşteri Ekle
+            </button>
+        </td>
+        
+        <!-- Modal -->
+        <div class="modal fade" id="addClientModal" tabindex="-1" role="dialog" aria-labelledby="addClientModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addClientModalLabel">Yeni Müşteri Ekle</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @using (Html.BeginForm("AddNewClient", "Client", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                        {
+                            <div class="form-group">
+                                @Html.Label("", "Ad")
+                                <input type="text" id="Name" name="Name" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("", "Soyad")
+                                <input type="text" id="Surname" name="Surname" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("", "Numara")
+                                <input type="text" id="PhoneNum" name="PhoneNum" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("", "Email")
+                                <input type="email" id="email" name="email" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("", "Durum")
+                                <select id="isActive" name="isActive" class="form-control">
+                                    <option value="true">Aktif</option>
+                                    <option value="false">Pasif</option>
+                                </select>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                                <button type="submit" class="btn btn-primary">Kaydet</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    }
+        
+    </table>
+
+    @using (Html.BeginForm("exportDataToExcel", "Client", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+
+
+        <tbody>
+            @for (var i = 0; i < Model.Count(); i++)
+            {
+                <tr>
+                    <td>
+                        @Html.HiddenFor(ClientId => Model.ToList()[i].ClientId)
+                    </td>
+                    <td>
+                        @Html.HiddenFor(ActivityId => Model.ToList()[i].Name)
+                    </td>
+                    <td>
+                        @Html.HiddenFor(Store => Model.ToList()[i].Surname)
+                    </td>
+                    <td>
+                        @Html.HiddenFor(State => Model.ToList()[i].PhoneNum)
+                    </td>
+                    <td>
+                        @Html.HiddenFor(ProductName => Model.ToList()[i].email)
+                    </td>
+                    @*<td>
+                            @Html.HiddenFor(CommunicationChannel => Model.ToList()[i].password)
+                        </td>*@
+                    <td>
+                        @Html.HiddenFor(Notes => Model.ToList()[i].isActive)
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+        <input type="submit" value="Verileri Excel'e aktar'" style="color: white; font-size: 14px; border-radius: 10px; padding: 3px 3px 3px 3px; background-color: #1D6F42; text-decoration: none;" />
+
+    }
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+    $('.editUserButton').on('click', function () {
+        var button = $(this);
+        $('#editClientModal #editName').val(button.data('name'));
+        $('#editClientModal #editSurname').val(button.data('surname'));
+        $('#editClientModal #editPhoneNum').val(button.data('phonenum'));
+        $('#editClientModal #editEmail').val(button.data('email'));
+        $('#editClientModal #ClientId').val(button.data('userid'));
+    });
+        $('.addClientButton').on('click', function () {
+            $('#addClientModal #Name').val('');
+            $('#addClientModal #Surname').val('');
+            $('#addClientModal #PhoneNum').val('');
+            $('#addClientModal #email').val('');
+            $('#addClientModal #isActive').val('true'); // Varsayılan olarak "Aktif" olarak ayarla
+        });
+});
+</script>

@@ -1,0 +1,230 @@
+﻿@model IEnumerable<StajIlkProje.Models.Product>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+@using (Html.BeginForm("SearchInProducts", "Product", FormMethod.Post, new { @class = "form-horizontal", role = "form", @style = "height:0px" }))
+{
+    <div class="input-group">
+        <div class="form-outline" data-mdb-input-init>
+            @Html.TextBox("text", null, new { @id = "form2", @class = "form-control", style = "width: 900px;", type = "search", placeholder = "Search..." })
+        </div>
+        <button type="submit" class="btn btn-primary" style="background-color: #34a1eb; border: none; border-radius: 10px; padding: 3px 10px; height: 50px;">
+            <i class="fas fa-search" style="color: white; font-size: 18px;"></i>
+        </button>
+    </div>
+}
+
+
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProductModal">Yeni Ürün Ekle</button>
+
+<!-- Yeni Ürün Ekle Modalı -->
+<div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addProductModalLabel">Yeni Ürün Ekle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("AddProduct", "Product", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    <div class="form-group">
+                        @Html.Label("Kategori")
+                        @Html.DropDownList("kategory", new SelectList(new List<string>
+                        {
+                            "Yüzük", "Bileklik", "Kolye", "Gram", "Çeyrek", "Yarım", "Tam", "Reşat",
+                            "Ata", "Bilezik", "Küpe", "Saat", "Zincir"
+                        }), "Seçiniz", new { @class = "form-control", @id = "addKategory" })
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Alt Kategori")
+                        @Html.DropDownList("subkategory", new SelectList(new List<string>(), "Seçiniz"), new { @class = "form-control", @id = "addSubkategory" })
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Adet")
+                        @Html.TextBox("number", "", new { @class = "form-control", @id = "addNumber" })
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Ayar")
+                        @Html.DropDownList("carat", new SelectList(new List<int> { 8, 10, 12, 14, 18, 20, 22, 24 }), "Seçiniz", new { @class = "form-control", @id = "addCarat" })
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Gram")
+                        @Html.TextBox("gram", "", new { @class = "form-control", @id = "addGram" })
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Tarih")
+                        @Html.TextBox("RecordDate", "", new { @class = "form-control", @id = "editRecordDate", type = "date" })
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Ekle" class="btn btn-primary" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ürün Düzenle Modalı -->
+<div class="modal fade" id="editProductModal" tabindex="-1" role="dialog" aria-labelledby="editProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProductModalLabel">Ürün Düzenle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("UpdateProduct", "Product", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.Hidden("ProductId", "", new { @id = "editProductId" })
+                    <div class="form-group">
+                        @Html.Label("Kategori")
+                        @Html.DropDownList("kategory", new SelectList(new List<string>
+                        {
+                            "Yüzük", "Bileklik", "Kolye", "Gram", "Çeyrek", "Yarım", "Tam", "Reşat",
+                            "Ata", "Bilezik", "Küpe", "Saat", "Zincir"
+                        }), "Seçiniz", new { @class = "form-control", @id = "editKategory" })
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Alt Kategori")
+                        @Html.DropDownList("subkategory", new SelectList(new List<string>(), "Seçiniz"), new { @class = "form-control", @id = "editSubkategory" })
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Adet")
+                        @Html.TextBox("number", "", new { @class = "form-control", @id = "editNumber" })
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Ayar")
+                        @Html.DropDownList("carat", new SelectList(new List<int> { 8, 10, 12, 14, 18, 20, 22, 24 }), "Seçiniz", new { @class = "form-control", @id = "addCarat" })
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Gram")
+                        @Html.TextBox("gram", "", new { @class = "form-control", @id = "editGram" })
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Tarih")
+                        @Html.TextBox("RecordDate", "", new { @class = "form-control", @id = "editRecordDate", type = "date" })
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Değişiklikleri Kaydet" class="btn btn-primary" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Ürün Id</th>
+            <th>Kategori</th>
+            <th>Alt Kategori</th>
+            <th>Adet</th>
+            <th>Ayar</th>
+            <th>Gram</th>
+            <th>Kayıt Tarihi</th>
+            <th>Düzenle</th>
+            <th>Sil</th>
+        </tr>
+    </thead>
+    @if (Model != null)
+    {
+        <tbody>
+            @foreach (var product in Model)
+            {
+                <tr>
+                    <td>@product.ProductId</td>
+                    <td>@product.kategory</td>
+                    <td>@product.subkategory</td>
+                    <td>@product.number</td>
+                    <td>@product.carat</td>
+                    <td>@product.gram</td>
+                    <td>@product.RecordDate.ToShortDateString()</td>
+                    <td>
+                        <!-- Düzenleme İkonu -->
+                        <a href="#" class="editProductButton" data-toggle="modal" data-target="#editProductModal"
+                           data-productid="@product.ProductId" data-number="@product.number" data-carat="@product.carat"
+                           data-gram="@product.gram" data-recorddate="@product.RecordDate.ToString("yyyy-MM-dd")"
+                           data-kategory="@product.kategory" data-subkategory="@product.subkategory">
+                            <i class="fas fa-pencil-alt" style="color: #007bff; font-size: 18px; background-color: #e9ecef; border-radius: 5px; padding: 5px; cursor: pointer;"></i>
+                        </a>
+                    </td>
+
+                    @using (Html.BeginForm("DeleteProduct", "Product", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {
+                        <td>
+                            <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+                                <i class="fas fa-trash" style="color: white; font-size: 18px; background-color: #ff5c5c; border-radius: 5px; padding: 5px;"></i>
+                            </button>
+                            @Html.Hidden("ProductId", product.ProductId)
+                        </td>
+                    }
+
+                
+                </tr>
+            }
+        </tbody>
+    }
+    
+</table>
+
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProductModal">Yeni Ürün Ekle</button>
+<script>
+    $(document).ready(function () {
+        function updateSubCategoryDropdown(category, dropdownId) {
+            var subCategories = {
+                "Yüzük": ["Alyans", "Tektaş"],
+                "Bileklik": ["Çocuk", "Yetişkin"],
+                "Kolye": ["Kolye 1", "Kolye 2"],
+                "Gram": ["Gram 1", "Gram 2"],
+                "Çeyrek": ["Çeyrek 1", "Çeyrek 2"],
+                "Yarım": ["Yarım 1", "Yarım 2"],
+                "Tam": ["Tam 1", "Tam 2"],
+                "Reşat": ["Reşat 1", "Reşat 2"],
+                "Ata": ["Ata 1", "Ata 2"],
+                "Bilezik": ["Bilezik 1", "Bilezik 2"],
+                "Küpe": ["Küpe 1", "Küpe 2"],
+                "Saat": ["Saat 1", "Saat 2"],
+                "Zincir": ["Zincir 1", "Zincir 2"]
+            };
+
+            var options = '<option value="">Seçiniz</option>';
+            if (subCategories[category]) {
+                $.each(subCategories[category], function (index, subCategory) {
+                    options += '<option value="' + subCategory + '">' + subCategory + '</option>';
+                });
+            }
+
+            $(dropdownId).html(options);
+        }
+
+        $('#addKategory, #editKategory').change(function () {
+            var selectedCategory = $(this).val();
+            var targetDropdownId = $(this).attr('id') === 'addKategory' ? '#addSubkategory' : '#editSubkategory';
+            updateSubCategoryDropdown(selectedCategory, targetDropdownId);
+        });
+
+        $('.editProductButton').click(function () {
+            $('#editProductId').val($(this).data('productid'));
+            $('#editNumber').val($(this).data('number'));
+            $('#editCarat').val($(this).data('carat'));
+            $('#editGram').val($(this).data('gram'));
+            $('#editRecordDate').val($(this).data('recorddate'));
+            $('#editKategory').val($(this).data('kategory')).change();
+            $('#editSubkategory').val($(this).data('subkategory'));
+        });
+    });
+</script>

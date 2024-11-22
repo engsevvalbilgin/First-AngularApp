@@ -1,0 +1,162 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string from_submit = "";
+    string from_go_back = "";
+    if(TempData["from"].ToString() == "ShowUpdateClientfromOpenClientList") {
+        from_submit = "UpdateClientfromOpenClientList";
+        from_go_back = "GoBacktoOpenClients";
+    }
+    else if(TempData["from"].ToString() == "ShowUpdateClientfromClientList") {
+        from_submit = "UpdateClientfromClientList";
+        from_go_back = "GoBacktoAllClients";
+    }
+
+}
+@model StajIlkProje.Models.Client
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #b5cef5;
+        }
+
+        .container {
+            
+            margin: auto;
+            margin-top: 100px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+            .container h2 {
+                text-align: center;
+            }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+            .form-group label {
+                display: block;
+                font-weight: bold;
+            }
+
+            .form-group input {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box;
+            }
+
+                .form-group input[type="submit"] {
+                    background-color: #007bff;
+                    color: white;
+                    border: none;
+                    padding: 10px 20px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    border-radius: 5px;
+                }
+
+                    .form-group input[type="submit"]:hover {
+                        background-color: #0056b3;
+                    }
+
+        .sign-in-button {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+            .sign-in-button button {
+                background-color: transparent;
+                border: none;
+                color: #007bff;
+                cursor: pointer;
+                font-size: 14px;
+            }
+
+                .sign-in-button button:hover {
+                    text-decoration: underline;
+                }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Update Client</h2>
+
+        @using (Html.BeginForm(from_submit, "Client", FormMethod.Post, new { @class = "form -horizontal", role = "form" }))
+        {
+            <div class="form-group">
+                @Html.HiddenFor(model => model.ClientId)
+
+            </div>
+            <div class="form-group">
+                <label>Name:</label>
+                @Html.TextBoxFor(model => model.Name)
+            </div>
+            <div class="form-group">
+                <label>Surname:</label>
+                @Html.TextBoxFor(model => model.Surname)
+            </div>
+            <div class="form-group">
+                <label>Phone:</label>
+                @Html.TextBoxFor(model => model.PhoneNum)
+            </div>
+            <div class="form-group">
+                <label>Email:</label>
+                @Html.TextBoxFor(model => model.email)
+            </div>
+            <!--<div class="form-group">
+                <label>Password:</label>-->
+                @*@Html.TextBoxFor(model => model.password)*@
+            <!--</div>-->
+            <div class="form-group">
+                <label>Clilent State:</label>
+                @Html.DropDownList("isActive", new SelectList(new List<SelectListItem>
+{
+new SelectListItem { Text = "Active", Value = "True" },
+new SelectListItem { Text = "Passive", Value = "False" },
+
+}, "Value", "Text"), "Select State", new { @class = "custom-dropdown" })
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Submit" />
+            </div>
+        }
+
+        @using (Html.BeginForm(from_go_back, "Client", FormMethod.Post, new { @class = "form -horizontal", role = "form" }))
+        { 
+        <div class="form-group">
+            <input type="submit" value="Go Back" style="background-color:black" />
+        </div>
+        }
+        </div>
+
+</body>
+</html>
+@*@using (Html.BeginForm("UpdateClient", "Client", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        <fieldset>
+            @Html.HiddenFor(model => model.ClientId)
+            <b>Name: </b> @Html.TextBoxFor(model => model.Name)
+            <b>Surname: </b> @Html.TextBoxFor(model => model.Surname)
+            <b>Email: </b> @Html.TextBoxFor(model => model.email)
+            <b>Password: </b> @Html.TextBoxFor(model => model.password)
+            <b>PhoneNum: </b> @Html.TextBoxFor(model => model.PhoneNum)
+            <b>isActive: </b> @Html.TextBoxFor(model => model.isActive)
+
+            <input type="submit" value="Submit" />
+        </fieldset>
+    }*@

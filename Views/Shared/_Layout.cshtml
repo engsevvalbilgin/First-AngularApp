@@ -1,0 +1,137 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Şevval</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #343a40;
+            padding-top: 20px;
+        }
+
+            .sidebar a {
+                padding: 10px 15px;
+                text-decoration: none;
+                font-size: 18px;
+                color: #ffffff;
+                display: block;
+            }
+
+                .sidebar a:hover {
+                    background-color: #575d63;
+                }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .sidebar .navbar-brand {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+            text-align: center;
+            display: block;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a class="navbar-brand" href="#">Şevval</a>
+        @using (Html.BeginForm("Index", "DashBoard", FormMethod.Post))
+        {
+            <input type="submit" value="Anasayfa " style="background-color: transparent; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size :18px" />
+        }
+        @if (StajIlkProje.Controllers.RegisterController.yetki) 
+        {
+            using (Html.BeginForm("ShowUserList", "User", FormMethod.Post))
+            {
+                <input type="submit" value="Kullanıcı Listesi " style="background-color: transparent; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size :18px" />
+            }
+        }
+        @using (Html.BeginForm("ShowProductList", "Product", FormMethod.Post))
+        {
+            <input type="submit" value="Ürünler Listesi " style="background-color: transparent; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size :18px" />
+        }
+        @using (Html.BeginForm("ShowClientList", "Client", FormMethod.Post))
+        {
+            <input type="submit" value="Müşteri Listesi " style="background-color: transparent; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size :18px" />
+        }
+        @using (Html.BeginForm("ShowAllActivities", "Activity", FormMethod.Post))
+        {
+            <input type="submit" value="Aktivite Listesi " style="background-color: transparent; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size :18px" />
+        }
+        @using (Html.BeginForm("About", "Home", FormMethod.Post))
+        {
+            <input type="submit" value="Hakkımızda " style="background-color: transparent; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size :18px" />
+        }
+
+        @using (Html.BeginForm("Logout", "Client", FormMethod.Post))
+        {
+            <input type="submit" value="Logout " style="background-color: transparent; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size :18px" />
+        }
+
+
+    </div>
+    <div class="content">
+        <div class="container">
+            @RenderBody()
+        </div>
+        @RenderSection("scripts", required: false)
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+@if (TempData["Success"] != null)
+{
+
+    <script>
+        $(document).ready(function() {
+            // Toastr ayarlarını yapılandır
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+
+            // Toastr ile TempData["Success"] mesajını göster
+            toastr.success('Giriş Başarılı!', 'Başarılı');
+        });
+        </script>
+
+}
+</html>

@@ -1,0 +1,123 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Giriş</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #b5cef5;
+        }
+
+        .container {
+            width: 300px;
+            margin: auto;
+            margin-top: 100px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+            .container h2 {
+                text-align: center;
+            }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+            .form-group label {
+                display: block;
+                font-weight: bold;
+            }
+
+            .form-group input {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box;
+            }
+
+                .form-group input[type="submit"] {
+                    background-color: #007bff;
+                    color: white;
+                    border: none;
+                    padding: 10px 20px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    border-radius: 5px;
+                }
+
+                    .form-group input[type="submit"]:hover {
+                        background-color: #0056b3;
+                    }
+
+        .google-login-button {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+            .google-login-button button {
+                background-color: #4285f4;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                cursor: pointer;
+                font-size: 16px;
+                border-radius: 5px;
+                box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            }
+
+                .google-login-button button:hover {
+                    background-color: #357ae8;
+                }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Giriş</h2>
+
+        @using (Html.BeginForm("LogIn", "Register", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            <div class="form-group">
+                <label>Email:</label>
+                @Html.TextBox("email", "", new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label>Şifre:</label>
+                @Html.Password("password", "", new { @class = "form-control" })
+            </div>
+            <input type="hidden" name="returnUrl" value="@Request.QueryString["ReturnUrl"]" />
+            if (TempData["Error"] != null)
+            {
+                <div id="errorCard" class="card" style="width: 100%; height: 100%; background-color: transparent;">
+                    <div class="card-body">
+                        <p class="card-text" style="font-size: 15px; color: #f21f18;">@TempData["Error"]</p>
+                    </div>
+                </div>
+            }
+            <div class="form-group">
+                <input type="submit" value="Giriş Yap" />
+            </div>
+        }
+
+        <div class="google-login-button">
+            @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                <button type="submit">Google ile Giriş</button>
+            }
+        </div>
+    </div>
+
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+</body>
+</html>

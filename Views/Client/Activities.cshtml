@@ -1,0 +1,53 @@
+﻿@model StajIlkProje.Models.Client
+@{
+    ViewBag.Title = "Activities";
+}
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ClientId</th>
+            <th>ActivityId</th>
+            <th>Communication Channel</th>
+            <th>Subject</th>
+            <th>Notes</th>
+            <th>Product Name</th>
+            <th>Store</th>
+            <th>Record Date</th>
+
+
+        </tr>
+    </thead>
+    <tbody>
+
+        @if (Model != null)
+        {
+            foreach (var activity in Model.ActivityList)
+            {
+                
+                <tr>
+                    <td>@Html.DisplayFor(modelItem=>activity.ClientId)</td>
+                    <td>@Html.DisplayFor(modelItem => activity.ActivityId)</td>
+                    <td>@Html.DisplayFor(modelItem => activity.CommunicationChannel)</td>
+                    <td>@Html.DisplayFor(modelItem => activity.Subject)</td>
+                    <td>@Html.DisplayFor(modelItem => activity.Notes)</td>
+                    <td>@Html.DisplayFor(modelItem => activity.ProductName)</td>
+                    <td>@Html.DisplayFor(modelItem => activity.Store)</td>
+                    <td>@String.Format("{0:MM/dd/yyyy}", activity.RecordDate)</td>
+
+
+
+
+
+
+
+                    <th><a href="~/Controllers/Activity.cs/UpdateActivity" style="color: white; font-size:14px; border-radius:10px; padding: 3px 3px 3px 3px; background-color: #F082AC; text-decoration: none; ">Update</a></th>
+
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>

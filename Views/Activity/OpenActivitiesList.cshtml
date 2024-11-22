@@ -1,0 +1,406 @@
+﻿@model IEnumerable<StajIlkProje.Models.Activity>
+@{
+    Layout = null;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var options = ViewBag.DropDownOptions as List<SelectListItem>;
+    string FromForSearch = "ShowSearchedActivitiesListInAll";
+    string FromForChangeState = "fromClientListChangeState";
+    string FromForEdit = "fromActivityListEditActivity";
+    if (TempData["From"] != null && TempData["From"].ToString() == "ShowAllActivities")
+    {
+        FromForSearch = "ShowSearchedActivitiesListInAll";
+        FromForChangeState = "fromActivityListChangeState";
+        FromForEdit = "fromAllEditActivity";
+    }
+
+    if (TempData["From"] != null && TempData["From"].ToString() == "ShowActivityListForClient")
+    {
+        FromForSearch = "ShowSearchedActivitiesListInClient";
+        FromForChangeState = "fromClientListChangeState";
+        FromForEdit = "fromActivityListEditActivity";
+
+
+    }
+
+    if (TempData["From"] != null && TempData["From"].ToString() == "ShowOpenActivitiesList")
+    {
+        FromForSearch = "ShowSearchedActivitiesListInOpenActivities";
+        FromForChangeState = "fromOpenActivitiesChangeState";
+        FromForEdit = "fromOpenActivitiesEditActivity";
+
+
+    }
+    int a = 0;
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+@using (Html.BeginForm(FromForSearch, "Activity", FormMethod.Post, new { @class = "form-horizontal", role = "form", @style = "height:0px; margin-bottom: 0; padding-bottom: 40;" }))
+{
+    if (Model != null && Model.FirstOrDefault() != null)
+    {
+        @Html.Hidden("ClientId", Model.FirstOrDefault().ClientId)
+    }
+    <div class="input-group">
+        <div class="form-outline" data-mdb-input-init>
+            @Html.TextBox("key", null, new { @id = "form1", @class = "form-control", style = "width: 900px;", type = "search" })
+        </div>
+        <input type="submit" class="btn btn-primary" value="Ara" style="color: white; font-size: 14px; border-radius: 10px; padding: 3px 3px 3px 3px; background-color: #34a1eb; text-decoration: none; width: 150px">
+    </div>
+}
+
+
+<h2>Aktiviteler</h2>
+<table class="table" style="margin-top: 0;">
+    <thead>
+        <tr>
+            <th>Müşteri No</th>
+            <th>Aktivite No</th>
+            <th>Ürün No</th>
+            <th>İletişim Kanalı</th>
+            <th>Konu</th>
+            <th>Notlar</th>
+            <th>Ürün Adedi</th>
+            <th>Dükkan</th>
+            <th>Kayıt Tarihi</th>
+            <th>Durum</th>
+            <th>Görüntüle</th>
+            <th>Sil</th>
+            <th>Mail</th>
+        </tr>
+    </thead>
+    @if (Model != null)
+    {
+        <tbody>
+            @foreach (var activity in Model)
+            {
+                a = activity.ClientId;
+                <tr>
+                    <td>@activity.ClientId</td>
+                    <td>@activity.ActivityId</td>
+                    <td>@activity.ProductId</td>
+                    <td>@activity.CommunicationChannel</td>
+                    <td>@activity.Subject</td>
+                    <td>@activity.Notes</td>
+                    <td>@activity.ProductAmount</td>
+                    <td>@activity.Store</td>
+                    <td>@activity.RecordDate.ToShortDateString()</td>
+                    <td>
+                        @if (activity.State.ToString() == "True")
+                        {
+                            <span class="fas fa-circle" style="color:green"></span>
+
+
+                        }
+                        else
+                        {
+                            <span class="fas fa-circle" style="color:red"></span>
+
+
+                        }
+                    </td>
+
+                    @using (Html.BeginForm(FromForEdit, "Activity", new { ActivityId = activity.ActivityId }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {
+                        <td>
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#editActivityModal" data-id="@activity.ActivityId" data-clientid="@activity.ClientId" data-productid="@activity.ProductId" data-amount="@activity.ProductAmount" data-channel="@activity.CommunicationChannel" data-subject="@activity.Subject" data-notes="@activity.Notes" data-store="@activity.Store" data-recorddate="@activity.RecordDate.ToString("yyyy-MM-dd")" data-state="@activity.State">Görüntüle</button>
+                        </td>
+                    }
+                    @using (Html.BeginForm(FromForChangeState, "Activity", new { ActivityId = activity.ActivityId }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {
+                        <td>
+                            <input type="submit" value="Sil" style="color: white; font-size: 14px; border-radius: 10px; padding: 3px 3px 3px 3px; background-color: red; text-decoration: none;" />
+                        </td>
+                    }
+
+
+
+                    @using (Html.BeginForm("SendEmailAsync", "Activity", new { ProductId = activity.ProductId, RequestedAmount = activity.ProductAmount, RecipientEmail = "eng.sevval.bilgin@gmail.com" }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {
+                        <td>
+                            <input type="submit" value="Mail Yolla" style="color: white; font-size: 14px; border-radius: 10px; padding: 3px 3px 3px 3px; background-color: #253742; text-decoration: none;" />
+                        </td>
+                    }
+                </tr>
+                <div class="modal fade" id="addActivityModal" tabindex="-1" role="dialog" aria-labelledby="addActivityModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addActivityModalLabel">Add New Activity</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                @using (Html.BeginForm("AddActivity", "Activity", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                                {
+                                    @Html.Hidden("ClientId", activity.ClientId, new { @class = "form-control" })
+                                    <div class="form-group">
+                                        @Html.Label("ProductId", "ProductId")
+                                        @Html.TextBox("ProductId", null, new { @class = "form-control" })
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.Label("ProductAmount", "ProductAmount")
+                                        @Html.TextBox("ProductAmount", null, new { @class = "form-control" })
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.Label("CommunicationChannel", "Communication Channel")
+                                        @Html.TextBox("CommunicationChannel", null, new { @class = "form-control" })
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.Label("Subject", "Subject")
+                                        @Html.TextBox("Subject", null, new { @class = "form-control" })
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.Label("Notes", "Notes")
+                                        @Html.TextBox("Notes", null, new { @class = "form-control" })
+                                    </div>
+
+                                    <div class="form-group">
+                                        @Html.Label("Store", "Store")
+                                        @Html.TextBox("Store", null, new { @class = "form-control" })
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.Label("RecordDate", "Record Date")
+                                        @Html.TextBox("RecordDate", null, new { @class = "form-control", @type = "date" })
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.Label("State", "State")
+                                        @Html.DropDownList("State", new SelectList(new List<SelectListItem>
+                                        {
+                                            new SelectListItem { Text = "Open", Value = "True" },
+                                            new SelectListItem { Text = "Closed", Value = "False" }
+                                        }, "Value", "Text"), new { @class = "form-control" })
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <input type="submit" class="btn btn-primary" value="Aktiviteyi Kaydet" />
+
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </tbody>
+    }
+
+    @if (Model == null||Model.ToList().Count==0)
+    {
+        <div class="modal fade" id="addActivityModal" tabindex="-1" role="dialog" aria-labelledby="addActivityModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addActivityModalLabel">Add New Activity</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @using (Html.BeginForm("AddActivity", "Activity", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                        {
+                            @Html.Hidden("ClientId", null, new { @class = "form-control" })
+                            <div class="form-group">
+                                @Html.Label("ProductId", "ProductId")
+                                @Html.TextBox("ProductId", null, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("ProductAmount", "ProductAmount")
+                                @Html.TextBox("ProductAmount", null, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("CommunicationChannel", "Communication Channel")
+                                @Html.TextBox("CommunicationChannel", null, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("Subject", "Subject")
+                                @Html.TextBox("Subject", null, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("Notes", "Notes")
+                                @Html.TextBox("Notes", null, new { @class = "form-control" })
+                            </div>
+
+                            <div class="form-group">
+                                @Html.Label("Store", "Store")
+                                @Html.TextBox("Store", null, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("RecordDate", "Record Date")
+                                @Html.TextBox("RecordDate", null, new { @class = "form-control", @type = "date" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("State", "State")
+                                @Html.DropDownList("State", new SelectList(new List<SelectListItem>
+                                {
+                                    new SelectListItem { Text = "Open", Value = "True" },
+                                    new SelectListItem { Text = "Closed", Value = "False" }
+                                }, "Value", "Text"), new { @class = "form-control" })
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <input type="submit" class="btn btn-primary" value="Aktiviteyi Kaydet" />
+
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</table>
+
+
+<button type="button" class="btn btn-success" data-toggle="modal" data-target="#addActivityModal">
+    Yeni Aktivite Ekle
+</button>
+
+<!-- Edit Activity Modal -->
+<div class="modal fade" id="editActivityModal" tabindex="-1" role="dialog" aria-labelledby="editActivityModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editActivityModalLabel">Edit Activity</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm(FromForEdit, "Activity", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.Hidden("ActivityId", null, new { @id = "modalActivityId" })
+                    @Html.Hidden("ClientId", null, new { @id = "modalClientId" })
+                    <div class="form-group">
+                        @Html.Label("ProductId", "ProductId")
+                        @Html.TextBox("ProductId", null, new { @class = "form-control", @id = "modalProductId", @readonly = "readonly" })
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("ProductAmount", "ProductAmount")
+                        @Html.TextBox("ProductAmount", null, new { @class = "form-control", @id = "modalProductAmount", @readonly = "readonly" })
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("CommunicationChannel", "Communication Channel")
+                        @Html.TextBox("CommunicationChannel", null, new { @class = "form-control", @id = "modalCommunicationChannel", @readonly = "readonly" })
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Subject", "Subject")
+                        @Html.TextBox("Subject", null, new { @class = "form-control", @id = "modalSubject", @readonly = "readonly" })
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Notes", "Notes")
+                        @Html.TextBox("Notes", null, new { @class = "form-control", @id = "modalNotes", @readonly = "readonly" })
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Store", "Store")
+                        @Html.TextBox("Store", null, new { @class = "form-control", @id = "modalStore", @readonly = "readonly" })
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("RecordDate", "Record Date")
+                        @Html.TextBox("RecordDate", null, new { @class = "form-control", @type = "date", @id = "modalRecordDate", @readonly = "readonly" })
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("State", "State")
+                       
+                        @Html.DropDownList("State", new SelectList(new List<SelectListItem>
+                        {
+                            new SelectListItem { Text = "Open", Value = "True" },
+                            new SelectListItem { Text = "Closed", Value = "False" }
+                        }, "Value", "Text"), new { @class = "form-control", @id = "modalState", @disabled = "disabled" })
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm("exportDataToExcel", "Activity", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    <tbody>
+        @for (var i = 0; i < Model.Count(); i++)
+        {
+            <tr>
+                <td>
+                    @Html.HiddenFor(ClientId => Model.ToList()[i].ClientId)
+                </td>
+                <td>
+                    @Html.HiddenFor(ActivityId => Model.ToList()[i].ActivityId)
+                </td>
+                <td>
+                    @Html.HiddenFor(Store => Model.ToList()[i].Store)
+                </td>
+                <td>
+                    @Html.HiddenFor(State => Model.ToList()[i].State)
+                </td>
+                <td>
+                    @Html.HiddenFor(ProductAmount => Model.ToList()[i].ProductAmount)
+                </td>
+                <td>
+                    @Html.HiddenFor(CommunicationChannel => Model.ToList()[i].CommunicationChannel)
+                </td>
+                <td>
+                    @Html.HiddenFor(Notes => Model.ToList()[i].Notes)
+                </td>
+                <td>
+                    @Html.HiddenFor(RecordDate => Model.ToList()[i].RecordDate)
+                </td>
+                <td>
+                    @Html.HiddenFor(Subject => Model.ToList()[i].Subject)
+                </td>
+            </tr>
+        }
+    </tbody>
+    <th>
+        <input type="submit" name="asd" value="Excel'e Aktar'" style="color: white; font-size: 14px; border-radius: 10px; padding: 3px 3px 3px 3px; background-color: #1D6F42; text-decoration: none; " />
+    </th>
+}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var successMessage = '@TempData["SuccessMessage"]';
+        var errorMessage = '@TempData["ErrorMessage"]';
+
+        if (successMessage) {
+            toastr.success(successMessage);
+        }
+        if (errorMessage) {
+            toastr.error(errorMessage);
+        }
+        $('#addActivityModal').on('show.bs.modal', function (event) {
+            // Form alanlarını temizle
+            $(this).find('form')[0].reset();
+        });
+        $('#editActivityModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var activityId = button.data('id');
+            var clientId = button.data('clientid');
+            var productId = button.data('productid');
+            var amount = button.data('amount');
+            var channel = button.data('channel');
+            var subject = button.data('subject');
+            var notes = button.data('notes');
+            var store = button.data('store');
+            var recordDate = button.data('recorddate');
+            var state = button.data('state');
+
+            var modal = $(this);
+            modal.find('#modalActivityId').val(activityId);
+            modal.find('#modalClientId').val(clientId);
+            modal.find('#modalProductId').val(productId);
+            modal.find('#modalProductAmount').val(amount);
+            modal.find('#modalCommunicationChannel').val(channel);
+            modal.find('#modalSubject').val(subject);
+            modal.find('#modalNotes').val(notes);
+            modal.find('#modalStore').val(store);
+            modal.find('#modalRecordDate').val(recordDate);
+            modal.find('#modalState').val(state);
+        });
+    });
+</script>
